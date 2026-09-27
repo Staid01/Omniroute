@@ -941,7 +941,13 @@ async function patchedFetchUnrecorded(
 
     let lastDispatcherError: unknown = null;
     const directBodyForTimeout = typeof options.body === "string" ? options.body : null;
-    const directHeadersTimeoutMs = resolveDirectHeadersTimeoutMs(undefined, directBodyForTimeout);
+    const directHeadersTimeoutMs = resolveDirectHeadersTimeoutMs(
+      undefined,
+      directBodyForTimeout,
+      0,
+      !!options.signal,
+      targetUrl
+    );
     let targetHostForLogs = "";
     try {
       targetHostForLogs = new URL(targetUrl).host;
@@ -957,7 +963,13 @@ async function patchedFetchUnrecorded(
             dispatcher: attempt === 0 ? getDefaultDispatcher() : getRetryDispatcher(),
           },
           _undiciDirect,
-          resolveDirectHeadersTimeoutMs(undefined, directBodyForTimeout, attempt, !!options.signal)
+          resolveDirectHeadersTimeoutMs(
+            undefined,
+            directBodyForTimeout,
+            attempt,
+            !!options.signal,
+            targetUrl
+          )
         );
       } catch (dispatcherError) {
         if (isDirectResponseStartTimeout(dispatcherError)) {
