@@ -1774,6 +1774,7 @@ async function handleSingleModelChat(
             settings: retrySettings,
             attempt: requestRetryAttempt,
             budgetLeftMs: requestRetryBudgetLeftMs,
+            lastErrorCode: credentials.lastErrorCode,
           });
 
           if (retryDecision.shouldRetry) {
