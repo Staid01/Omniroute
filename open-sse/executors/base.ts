@@ -106,6 +106,7 @@ import {
   mergeUpstreamExtraHeaders,
   setUserAgentHeader,
   applyConfiguredUserAgent,
+  applyHuggingFaceBillToHeader,
   stripStainlessHeadersForOpenAICompat,
 } from "./base/headers.ts";
 import { applyPeerTraceHeader } from "@/shared/resilience/peerRouting";
@@ -124,6 +125,7 @@ export {
   getCustomUserAgent,
   setUserAgentHeader,
   applyConfiguredUserAgent,
+  applyHuggingFaceBillToHeader,
   isOpenAICompatibleEndpoint,
   stripStainlessHeadersForOpenAICompat,
 } from "./base/headers.ts";
@@ -834,6 +836,9 @@ export class BaseExecutor {
         body
       );
       applyConfiguredUserAgent(headers, requestCredentials?.providerSpecificData);
+      if (this.provider === "huggingface") {
+        applyHuggingFaceBillToHeader(headers, requestCredentials?.providerSpecificData);
+      }
 
       // Strip OpenAI SDK (X-Stainless-*) metadata + normalize SDK-derived User-Agent
       // on OpenAI-compatible passthrough requests — some upstream gateways 403 on them.
